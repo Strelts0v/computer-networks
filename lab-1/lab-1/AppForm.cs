@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
 
-namespace lab_1
+namespace COM
 {
     // Contains main logic of form
     public partial class AppForm : Form
@@ -18,7 +18,7 @@ namespace lab_1
 
         private Thread senderThread;
 
-        private bool isReceiverThreadContinueWork;
+        private bool isReceiverThreadActivated;
 
         private bool isSenderThreadActivated;
 
@@ -41,7 +41,7 @@ namespace lab_1
             this.sender = new Sender(connectionApi);
 
             receiverThread = new Thread(ReceiverThreadProcedure);
-            isReceiverThreadContinueWork = true;
+            isReceiverThreadActivated = true;
             isSenderThreadActivated = false;
             receiverThread.Start();
         }
@@ -97,7 +97,7 @@ namespace lab_1
 
         private void ReceiverThreadProcedure()
         {
-            while (isReceiverThreadContinueWork)
+            while (isReceiverThreadActivated)
             {
                 string data = receiver.Receive();
                 AddTextToReceiverTextBox(data);
@@ -133,19 +133,40 @@ namespace lab_1
 
         private void ExitButton_Click(object sender, EventArgs e)
         {
+            if (isReceiverThreadActivated)
+            {
+                receiverThread.Abort();
+            }
+            if (isSenderThreadActivated)
+            {
+                senderThread.Abort();
+            }
+            
             System.Windows.Forms.Application.Exit();
         }
 
         private void ReceptionSpeedComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if(isSenderThreadActivated)
+            {
+                MessageBox.Show(THREAD_IS_ALREADY_ACTIVE_MESSAGE);
+                return;
+            }
+
             Int32 receptionSpeed = Convert.ToInt32(receptionSpeedComboBox.SelectedItem);
             receiver.SetReceptionSpeed(receptionSpeed);
         }
-
+    
         private void BaudRateComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (isSenderThreadActivated)
+            {
+                MessageBox.Show(THREAD_IS_ALREADY_ACTIVE_MESSAGE);
+                return;
+            }
+
             Int32 baudRate = Convert.ToInt32(baudRateComboBox.SelectedItem);
-            receiver.SetReceptionSpeed(baudRate);
-        }
+            this.sender.SetBaudRate(baudRate);
+        }          
     }
 }
