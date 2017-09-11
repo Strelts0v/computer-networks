@@ -1,4 +1,4 @@
-﻿namespace lab_1
+﻿namespace COM
 {
     partial class AppForm
     {
@@ -24,7 +24,7 @@
             "20000"
         };
 
-        private readonly static string DEFAULT_SERIAL_PORT_SPEED = "9600";
+        private readonly static string DEFAULT_SERIAL_PORT_SPEED = "8";
 
         /// <summary>
         /// Required designer variable.
