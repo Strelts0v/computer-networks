@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO; // for work with COM port
 using System.IO.Ports;
 
-namespace lab_1
+namespace COM
 {
     class SerialPortConnectionApi
     {
@@ -16,16 +16,16 @@ namespace lab_1
 
         private SerialPort receiverPort;
 
-        private readonly static int SERIAL_PORT_READ_TIMEOUT = 500;
+        private readonly static int SERIAL_PORT_READ_TIMEOUT = 100000;
 
-        private readonly static int SERIAL_PORT_WRITE_TIMEOUT = 500;
+        private readonly static int SERIAL_PORT_WRITE_TIMEOUT = 100000;
 
         private readonly static string SENDER_SERIAL_PORT_NAME = "COM1";
 
         private readonly static string RECEIVER_SERIAL_PORT_NAME = "COM2";
 
         // bits per sec
-        private readonly static int DEFAULT_SERIAL_PORT_SPEED = 9600;
+        private readonly static int DEFAULT_SERIAL_PORT_SPEED = 8;
 
         private readonly static Encoding ENCODING = Encoding.UTF8;
 
@@ -45,6 +45,7 @@ namespace lab_1
             senderPort.ReadTimeout = SERIAL_PORT_READ_TIMEOUT;
             senderPort.WriteTimeout = SERIAL_PORT_WRITE_TIMEOUT;
             senderPort.BaudRate = DEFAULT_SERIAL_PORT_SPEED;
+
             receiverPort.ReadTimeout = SERIAL_PORT_READ_TIMEOUT;
             receiverPort.WriteTimeout = SERIAL_PORT_WRITE_TIMEOUT;
             receiverPort.BaudRate = DEFAULT_SERIAL_PORT_SPEED;
@@ -89,11 +90,13 @@ namespace lab_1
         public void SetBaudRate(int portBaudRate)
         {
             senderPort.BaudRate = portBaudRate;
+            senderPort.Parity = Parity.Odd;
         }
 
         public void SetReceptionSpeed(int receptionSpeed)
         {
             receiverPort.BaudRate = receptionSpeed;
+            receiverPort.Parity = Parity.Odd;
         }
     }
 }
