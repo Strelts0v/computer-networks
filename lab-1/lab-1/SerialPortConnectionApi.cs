@@ -90,13 +90,11 @@ namespace COM
         public void SetBaudRate(int portBaudRate)
         {
             senderPort.BaudRate = portBaudRate;
-            senderPort.Parity = Parity.Odd;
         }
 
         public void SetReceptionSpeed(int receptionSpeed)
         {
             receiverPort.BaudRate = receptionSpeed;
-            receiverPort.Parity = Parity.Odd;
         }
     }
 }
