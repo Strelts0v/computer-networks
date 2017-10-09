@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO; // for work with COM port
 using System.IO.Ports;
 
+
 namespace COM
 {
     class SerialPortConnectionApi
@@ -27,7 +28,7 @@ namespace COM
         // bits per sec
         private readonly static int DEFAULT_SERIAL_PORT_SPEED = 8;
 
-        private readonly static Encoding ENCODING;
+        private readonly static Encoding ENCODING = Encoding.UTF8;
 
         private readonly static int BUFFER_SIZE = 256;
 
@@ -72,22 +73,18 @@ namespace COM
             try
             {
                 readbytes = receiverPort.Read(buffer, offset, count);
-                buffer = ByteStuffing.Decode(buffer);
+                buffer = BitStuffer.Decode(buffer);
             }
             catch (TimeoutException) { }
-            return Encoding.UTF8.GetString(buffer);
+            return ENCODING.GetString(buffer);
         }
 
         public void Write(string data)
         {
-            byte[] bytes = GetArrotOfBytes(data);
-            bytes = ByteStuffing.Encode(bytes);
+            byte[] bytes = ENCODING.GetBytes(data);
+            bytes = BitStuffer.Encode(bytes);
             Int32 count = bytes.Length;
             senderPort.Write(bytes, 0, count);
-            //for (int offset = 0; offset < count; offset++)
-            //{
-                
-            //}
         }
 
         public void SetBaudRate(int portBaudRate)
@@ -98,18 +95,6 @@ namespace COM
         public void SetReceptionSpeed(int receptionSpeed)
         {
             receiverPort.BaudRate = receptionSpeed;
-        }
-
-        private byte[] GetArrotOfBytes(string message)
-        {
-            byte[] data = new byte[message.Length];
-
-            int index = 0;
-            foreach (var ch in message)
-            {
-                data[index++] = (byte)ch;
-            }
-            return data;
         }
     }
 }
